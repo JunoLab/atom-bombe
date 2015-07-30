@@ -1,5 +1,6 @@
 {CompositeDisposable} = require 'atom'
 crypto = require './encryption'
+Dialog = require './dialog'
 
 module.exports = Cryptex =
   activate: (state) ->
@@ -15,6 +16,15 @@ module.exports = Cryptex =
 
   getPassword: (f) ->
     f 'foobar'
+
+  prompt: (s, f) ->
+    d = new Dialog
+      iconClass: 'icon-lock'
+      prompt: s
+    d[0].querySelector('atom-text-editor').style.webkitTextSecurity = 'disc'
+    d.onConfirm = (pw) =>
+      f pw, d
+    d.attach()
 
   chunk: (xs, n=80) ->
     for i in [0...xs.length] by n
@@ -45,7 +55,6 @@ module.exports = Cryptex =
 
   handleOpen: (ed) ->
     ls = ed.getBuffer().getLines()
-    console.log ls[0]
     if ls[0] == 'bombe-aes192'
       ls.shift()
       enc = ls.join ''
