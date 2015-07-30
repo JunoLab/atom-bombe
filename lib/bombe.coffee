@@ -38,7 +38,6 @@ module.exports = Cryptex =
   format: (s) -> @chunk(s).join('\n')
 
   encryptEditor: (ed) ->
-    return if ed.bombe
     @prompt 'Password for this file:', (pw, d) =>
       d.close()
       ed.bombe = {key: pw, listener: @listenSave ed}
