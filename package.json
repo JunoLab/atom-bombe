@@ -1,12 +1,10 @@
 {
   "name": "bombe",
   "main": "./lib/bombe",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Easy text encryption",
-  "keywords": [
-  ],
-  "activationCommands": {
-  },
+  "keywords": [],
+  "activationCommands": {},
   "repository": "https://github.com/JunoLab/atom-bombe",
   "license": "MIT",
   "engines": {
