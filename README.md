@@ -1,4 +1,4 @@
-# cryptex package
+# Bombe package
 
 A short description of your package.
 
