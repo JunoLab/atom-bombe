@@ -1,6 +1,7 @@
 {CompositeDisposable} = require 'atom'
 crypto = require './encryption'
 Dialog = require './dialog'
+status = require './status'
 
 module.exports = Cryptex =
   activate: (state) ->
@@ -13,6 +14,10 @@ module.exports = Cryptex =
 
   deactivate: () ->
     @subs.dispose()
+    @status.deactivate()
+
+  consumeStatusBar: (bar) ->
+    status.activate bar
 
   prompt: (s, f) ->
     process.nextTick =>
@@ -35,6 +40,7 @@ module.exports = Cryptex =
     @prompt 'Password for this file:', (pw, d) =>
       d.close()
       ed.bombe = {key: pw, listener: @listenSave ed}
+      status.update()
 
   listenSave: (ed) ->
     ed.onDidSave => @handleSave ed
@@ -67,3 +73,4 @@ module.exports = Cryptex =
         ed.getBuffer().cachedDiskContents = text
         ed.setText text
         ed.bombe = {key: pw, listener: @listenSave ed}
+        status.update()
