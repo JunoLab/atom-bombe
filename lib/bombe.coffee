@@ -58,9 +58,12 @@ module.exports = Cryptex =
       ls.shift()
       enc = ls.join ''
       @prompt 'This file is encrypted. Password:', (pw, d) =>
-        # TODO: catch bad passwords
+        try
+          text = crypto.decode enc, pw
+        catch e
+          d.showError 'Incorrect password.'
+          return
         d.close()
-        text = crypto.decode enc, pw
         ed.getBuffer().cachedDiskContents = text
         ed.setText text
         ed.bombe = {key: pw, listener: @listenSave ed}
