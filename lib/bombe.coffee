@@ -9,8 +9,10 @@ module.exports = Cryptex =
     @subs.add atom.workspace.observeTextEditors (ed) =>
       @handleOpen ed
     @subs.add atom.commands.add 'atom-text-editor',
-      'bombe:encrypt-this-file': =>
-        @encryptEditor()
+      'bombe:encrypt-this-file': (e) =>
+        @encryptEditor e.currentTarget.getModel()
+      'bombe:decrypt-this-file': (e) =>
+        @decryptEditor e.currentTarget.getModel()
 
   deactivate: () ->
     @subs.dispose()
@@ -35,12 +37,22 @@ module.exports = Cryptex =
 
   format: (s) -> @chunk(s).join('\n')
 
-  encryptEditor: (ed = atom.workspace.getActiveTextEditor()) ->
+  encryptEditor: (ed) ->
     return if ed.bombe
     @prompt 'Password for this file:', (pw, d) =>
       d.close()
       ed.bombe = {key: pw, listener: @listenSave ed}
+      ed.save()
       status.update()
+
+  decryptEditor: (ed) ->
+    if ed.bombe
+      ed.bombe.listener.dispose()
+      delete ed.bombe
+      ed.save()
+      status.update()
+    else
+      @handleOpen ed
 
   listenSave: (ed) ->
     ed.onDidSave => @handleSave ed
