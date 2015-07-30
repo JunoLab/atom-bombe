@@ -13,7 +13,7 @@ module.exports =
     @view.classList.add 'inline-block', 'icon', 'icon-lock'
 
   update: (item = atom.workspace.getActivePaneItem()) ->
-    encrypted = item.bombe?
+    encrypted = item?.bombe?
     if encrypted
       console.log @tile
     if encrypted and not @tile?
