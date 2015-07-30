@@ -14,17 +14,15 @@ module.exports = Cryptex =
   deactivate: () ->
     @subs.dispose()
 
-  getPassword: (f) ->
-    f 'foobar'
-
   prompt: (s, f) ->
-    d = new Dialog
-      iconClass: 'icon-lock'
-      prompt: s
-    d[0].querySelector('atom-text-editor').style.webkitTextSecurity = 'disc'
-    d.onConfirm = (pw) =>
-      f pw, d
-    d.attach()
+    process.nextTick =>
+      d = new Dialog
+        iconClass: 'icon-lock'
+        prompt: s
+      d[0].querySelector('atom-text-editor').style.webkitTextSecurity = 'disc'
+      d.onConfirm = (pw) =>
+        f pw, d
+      d.attach()
 
   chunk: (xs, n=80) ->
     for i in [0...xs.length] by n
@@ -34,7 +32,8 @@ module.exports = Cryptex =
 
   encryptEditor: (ed = atom.workspace.getActiveTextEditor()) ->
     return if ed.bombe
-    @getPassword (pw) =>
+    @prompt 'Password for this file:', (pw, d) =>
+      d.close()
       ed.bombe = {key: pw, listener: @listenSave ed}
 
   listenSave: (ed) ->
@@ -58,8 +57,9 @@ module.exports = Cryptex =
     if ls[0] == 'bombe-aes192'
       ls.shift()
       enc = ls.join ''
-      @getPassword (pw) =>
+      @prompt 'This file is encrypted. Password:', (pw, d) =>
         # TODO: catch bad passwords
+        d.close()
         text = crypto.decode enc, pw
         ed.getBuffer().cachedDiskContents = text
         ed.setText text
