@@ -4,6 +4,8 @@ crypto = require './encryption'
 module.exports = Cryptex =
   activate: (state) ->
     @subs = new CompositeDisposable
+    @subs.add atom.workspace.observeTextEditors (ed) =>
+      @handleOpen ed
     @subs.add atom.commands.add 'atom-text-editor',
       'bombe:encrypt-this-file': =>
         @encryptEditor()
@@ -21,5 +23,35 @@ module.exports = Cryptex =
   format: (s) -> @chunk(s).join('\n')
 
   encryptEditor: (ed = atom.workspace.getActiveTextEditor()) ->
+    return if ed.bombe
     @getPassword (pw) =>
-      ed.bombeKey = pw
+      ed.bombe = {key: pw, listener: @listenSave ed}
+
+  listenSave: (ed) ->
+    ed.onDidSave => @handleSave ed
+
+  handleSave: (ed) ->
+    return if ed.bombe.saving
+    ed.bombe.saving = true
+    text = ed.getText()
+    {key} = ed.bombe
+    enc = 'bombe-aes192\n' + @format crypto.encode text, key
+    ed.setText enc
+    ed.save()
+    delete ed.bombe.saving
+    ed.getBuffer().cachedDiskContents = text
+    ed.undo()
+    ed.undo()
+
+  handleOpen: (ed) ->
+    ls = ed.getBuffer().getLines()
+    console.log ls[0]
+    if ls[0] == 'bombe-aes192'
+      ls.shift()
+      enc = ls.join ''
+      @getPassword (pw) =>
+        # TODO: catch bad passwords
+        text = crypto.decode enc, pw
+        ed.getBuffer().cachedDiskContents = text
+        ed.setText text
+        ed.bombe = {key: pw, listener: @listenSave ed}
