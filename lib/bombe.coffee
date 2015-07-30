@@ -5,7 +5,7 @@ module.exports = Cryptex =
   activate: (state) ->
     @subs = new CompositeDisposable
     @subs.add atom.commands.add 'atom-text-editor',
-      'cyptex:encrypt-this-file': =>
+      'bombe:encrypt-this-file': =>
         @encryptEditor()
 
   deactivate: () ->

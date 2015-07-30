@@ -1,13 +1,13 @@
 {
-  "name": "cryptex",
-  "main": "./lib/cryptex",
+  "name": "bombe",
+  "main": "./lib/bombe",
   "version": "0.0.0",
-  "description": "A short description of your package",
+  "description": "Easy text encryption",
   "keywords": [
   ],
   "activationCommands": {
   },
-  "repository": "https://github.com/atom/cryptex",
+  "repository": "https://github.com/JunoLab/atom-bombe",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
