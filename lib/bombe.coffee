@@ -14,7 +14,12 @@ module.exports = Cryptex =
   getPassword: (f) ->
     f 'foobar'
 
+  chunk: (xs, n=80) ->
+    for i in [0...xs.length] by n
+      xs.slice i, i+n
+
+  format: (s) -> @chunk(s).join('\n')
+
   encryptEditor: (ed = atom.workspace.getActiveTextEditor()) ->
     @getPassword (pw) =>
-      text = ed.getText()
-      ed.setText crypto.encode text, pw
+      ed.bombeKey = pw
