@@ -41,14 +41,14 @@ module.exports = Cryptex =
     @prompt 'Password for this file:', (pw, d) =>
       d.close()
       ed.bombe = {key: pw, listener: @listenSave ed}
-      ed.save()
+      if ed.getPath() then ed.save()
       status.update()
 
   decryptEditor: (ed) ->
     if ed.bombe
       ed.bombe.listener.dispose()
       delete ed.bombe
-      ed.save()
+      if ed.getPath() then ed.save()
       status.update()
     else
       @handleOpen ed
