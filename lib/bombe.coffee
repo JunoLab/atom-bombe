@@ -3,7 +3,7 @@ crypto = require './encryption'
 Dialog = require './dialog'
 status = require './status'
 
-module.exports = Cryptex =
+module.exports =
   activate: (state) ->
     @subs = new CompositeDisposable
     @subs.add atom.workspace.observeTextEditors (ed) =>
@@ -16,7 +16,7 @@ module.exports = Cryptex =
 
   deactivate: () ->
     @subs.dispose()
-    @status.deactivate()
+    status.deactivate()
 
   consumeStatusBar: (bar) ->
     status.activate bar
