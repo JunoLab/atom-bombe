@@ -70,7 +70,7 @@ module.exports =
     ed.undo()
     setTimeout (->
       ed.getBuffer().cachedDiskContents = ed.getText()
-      ed.getBuffer().emitModifiedStatusChanged false), 10
+      ed.getBuffer().emitModifiedStatusChanged false), 100
 
   handleOpen: (ed) ->
     ls = ed.getBuffer().getLines()
