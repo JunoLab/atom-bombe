@@ -14,8 +14,8 @@ module.exports =
 
   update: (item = atom.workspace.getActivePaneItem()) ->
     encrypted = item?.bombe?
-    if encrypted
-      console.log @tile
+    # if encrypted
+    #   console.log @tile
     if encrypted and not @tile?
       @tile = @bar.addRightTile
         item: @view
