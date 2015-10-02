@@ -1,7 +1,7 @@
 {
   "name": "bombe",
   "main": "./lib/bombe",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Easy text encryption",
   "keywords": [],
   "activationCommands": {},
