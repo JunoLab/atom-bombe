@@ -54,20 +54,23 @@ module.exports =
       @handleOpen ed
 
   listenSave: (ed) ->
-    ed.onDidSave => @handleSave ed
+    l = new CompositeDisposable
+    l.add ed.getBuffer().onWillSave => @handleSave ed
+    l.add ed.getBuffer().onDidSave => @handleSaved ed
+    l
 
   handleSave: (ed) ->
-    return if ed.bombe.saving
-    ed.bombe.saving = true
     text = ed.getText()
+    # ed.bombe.text = text
     {key} = ed.bombe
     enc = 'bombe-aes192\n' + @format crypto.encode text, key
     ed.setText enc
-    ed.save()
-    delete ed.bombe.saving
-    ed.getBuffer().cachedDiskContents = text
+
+  handleSaved: (ed) ->
     ed.undo()
-    ed.undo()
+    setTimeout (->
+      ed.getBuffer().cachedDiskContents = ed.getText()
+      ed.getBuffer().emitModifiedStatusChanged false), 10
 
   handleOpen: (ed) ->
     ls = ed.getBuffer().getLines()
